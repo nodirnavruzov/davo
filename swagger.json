@@ -1,0 +1,390 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "version": "1.0.0", 
+    "title": "DAVO Rest Api",
+    "description": "Documentation REST API for DAVO"
+  },
+  "host": "192.168.2.8:3000",
+  "basePath": "/api/v1/",
+  "paths": {
+    "/doctor": {
+      "get": {
+        "tags": ["Doctor"],
+        "summary": "Get all doctors",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "properties": {
+                "data": {
+                "type":"array",
+                  "items": {
+                    "properties": {
+                      "_id": {
+                        "type": "integer",
+                        "uniqueItems": true,
+                        "autoIncrement": true
+                      },
+                      "name": {
+                        "type": "string",
+                        "maxLength": 50
+                      },
+                      "surname": {
+                        "type": "string",
+                        "maxLength": 50
+                      },
+                      "phone": {
+                        "type": "string",
+                        "maxLength": 50
+                      },
+                      "hospital": {
+                        "type": "string"
+                      },
+                      "doctor_type": {
+                        "type": "integer"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Error not found",
+            "schema": {
+              "properties": {
+                "Error": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/doctor/by-id": {
+      "get": {
+        "tags": ["Doctor"],
+        "summary": "Get doctor by ID",
+        "parameters": [{
+          "required":["id"],
+          "in": "qeury",
+          "name": "id"
+        }],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "type":"object",
+              "$ref": "#/definitions/Doctor"
+            }
+          },
+          "404": {
+            "description": "Error not found",
+            "schema": {
+              "properties": {
+                "Error": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/doctor/register": {
+      "post": {
+        "tags": ["Doctor"],
+        "summary": "Register",
+        "consumes": "application/json",
+        "parameters":[{
+          "required":["phone", "password"],
+          "in": "body",
+          "description": "Register doctor",
+          "schema": {
+          "$ref": "#/definitions/Doctor"
+          }
+        }],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "properties": {
+                "data": {
+                  "properties": {
+                    "_id": {
+                      "type": "integer",
+                      "uniqueItems": true,
+                      "autoIncrement": true
+                    },
+                    "name": {
+                      "type": "string",
+                      "maxLength": 50
+                    },
+                    "surname": {
+                      "type": "string",
+                      "maxLength": 50
+                    },
+                    "phone": {
+                      "type": "string",
+                      "maxLength": 50
+                    },
+                    "hospital": {
+                      "type": "string"
+                    },
+                    "doctor_type": {
+                      "type": "integer"
+                    }
+                  }
+                },
+                "message": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Validation error",
+            "schema": {
+              "properties": {
+                "Error": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflict",
+            "schema": {
+              "properties": {
+                "Error": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Server Error",
+            "schema": {
+              "properties": {
+                "Error": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/doctor/login": {
+      "post": {
+        "tags": ["Doctor"],
+        "summary": "Login",
+        "parameters":[{
+          "in": "body",
+          "required":["phone", "password"],
+          "description": "Login doctor",
+          "schema": {
+            "properties": {
+              "phone": {
+                "type": "string"
+              },
+              "password": {
+                "type":"string"
+              }
+            }
+          }
+        }],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "properties": {
+                "data": {
+                  "properties": {
+                    "_id": {
+                      "type": "integer",
+                      "uniqueItems": true,
+                      "autoIncrement": true
+                    },
+                    "name": {
+                      "type": "string",
+                      "maxLength": 50
+                    },
+                    "surname": {
+                      "type": "string",
+                      "maxLength": 50
+                    },
+                    "phone": {
+                      "type": "string",
+                      "maxLength": 50
+                    },
+                    "hospital": {
+                      "type": "string"
+                    },
+                    "doctor_type": {
+                      "type": "integer"
+                    }
+                  }
+                },
+                "token": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Phone or password wrong",
+            "schema": {
+              "properties": {
+                "Error": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Validation error",
+            "schema": {
+              "properties": {
+                "Error": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/doctor/type/by-name": {
+      "get": {
+        "tags": ["Doctor"],
+        "summary": "Get doctor type by name",
+        "parameters": [{
+          "in": "qeury",
+          "name": "name"
+        }],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "$ref": "#/definitions/Doctor_type"
+            }
+          },
+          "404": {
+            "description": "Error not found",
+            "schema": {
+              "properties": {
+                "Error": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Validation error",
+            "schema": {
+              "properties": {
+                "Error": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/doctor/type/create": {
+      "post": {
+        "tags": ["Doctor"],
+        "summary": "Login",
+        "parameters":[{
+          "in": "body",
+          "required":["name"],
+          "description": "Login doctor",
+          "schema": {
+            "properties": {
+              "name": {
+                "type": "string"
+              }
+            }
+          }
+        }],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "$ref":"#/definitions/Doctor_type"
+            }
+          },
+          "500": {
+            "description": "Server error",
+            "schema": {
+              "properties": {
+                "Error": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "definitions": {
+    "Doctor": {
+      "required": ["name", "surname", "password", "doctor_type"],
+      "properties": {
+        "_id": {
+          "type": "integer",
+          "uniqueItems": true,
+          "autoIncrement": true
+        },
+        "name": {
+          "type": "string",
+          "maxLength": 50
+        },
+        "surname": {
+          "type": "string",
+          "maxLength": 50
+        },
+        "phone": {
+          "type": "string",
+          "maxLength": 50
+        },
+        "hospital": {
+          "type": "string"
+        },
+        "password": {
+          "type": "string"
+        },
+        "doctor_type": {
+          "type": "integer"
+        }
+      }
+    },
+    "Doctor_type": {
+      "required": ["type"],
+      "properties": {
+        "_id": {
+          "type": "integer",
+          "uniqueItems": true,
+          "autoIncrement": true
+        },
+        "type": {
+          "type": "string",
+          "uniqueItems": true,
+          "maxLength": 255
+        }
+      }
+    },
+    "Users": {
+      "type": "array",
+      "$ref": "#/definitions/User"
+    }
+  },
+  "schemes": ["http"],
+  "consumes": ["application/json"],
+  "produces": ["application/json"]
+}

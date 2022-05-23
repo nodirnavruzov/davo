@@ -1,2 +1,5 @@
 node_modules
 config
+patientAddress.txt
+doctorAddress.txt
+tasks.md

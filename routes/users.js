@@ -1,9 +1,21 @@
-var express = require('express');
-var router = express.Router();
+const { Router } = require('express')
+const router = Router()
 
-/* GET users listing. */
+/* GET test listing. */
 router.get('/', function(req, res, next) {
-  res.send('respond with a resource');
-});
-
+  res.status(200).json([
+    {
+      name: 'John',
+      surname: 'Connor'
+    },
+    {
+      name: 'Michael',
+      surname: 'Jeckson'
+    },
+    {
+      name: 'Mike',
+      surname: 'Tyson'
+    },
+  ]);
+})
 module.exports = router;
