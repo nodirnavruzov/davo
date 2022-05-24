@@ -43,10 +43,40 @@
                       },
                       "doctor_type": {
                         "type": "integer"
+                      },
+                      "createdAt": {
+                        "type": "string"
+                      },
+                      "updatedAt": {
+                        "type": "string"
                       }
                     }
                   }
                 }
+              },
+              "example": {
+                "data": [
+                  {
+                    "id": 3,
+                    "name": "Henry",
+                    "surname": "Bren",
+                    "phone": "+998991234567",
+                    "hospital": "Safo Tibbiyot",
+                    "doctor_type": 1,
+                    "createdAt": "2022-05-20T10:09:40.000Z",
+                    "updatedAt": "2022-05-20T10:09:40.000Z"
+                  },
+                  {
+                    "id": 4,
+                    "name": "Nodir",
+                    "surname": "Navruzov",
+                    "phone": "+998991234568",
+                    "hospital": "Safo Tibbiyot",
+                    "doctor_type": 1,
+                    "createdAt": "2022-05-20T12:01:15.000Z",
+                    "updatedAt": "2022-05-20T12:01:15.000Z"
+                  }
+                ]
               }
             }
           },
@@ -57,6 +87,9 @@
                 "Error": {
                   "type": "string"
                 }
+              },
+              "example": {
+                "Error": "No doctor found"
               }
             }
           }
@@ -76,8 +109,45 @@
           "200": {
             "description": "OK",
             "schema": {
-              "type":"object",
-              "$ref": "#/definitions/Doctor"
+              "properties": {
+                "_id": {
+                  "type": "integer",
+                  "uniqueItems": true,
+                  "autoIncrement": true
+                },
+                "name": {
+                  "type": "string",
+                  "maxLength": 50
+                },
+                "surname": {
+                  "type": "string",
+                  "maxLength": 50
+                },
+                "phone": {
+                  "type": "string",
+                  "maxLength": 50
+                },
+                "hospital": {
+                  "type": "string"
+                },
+                "password": {
+                  "type": "string"
+                },
+                "doctor_type": {
+                  "type": "integer"
+                } 
+              },
+              "example": {
+                  "id": 3,
+                  "name": "Henry",
+                  "surname": "Bren",
+                  "phone": "+998991234567",
+                  "hospital": "Safo Tibbiyot",
+                  "password": "$2b$10$OCeHq$2sh/Ds6xsdaqcDDBunzl1/1KDojXC.lsSCOd4tkz1qasd0Qfa",
+                  "doctor_type": 1,
+                  "createdAt": "2022-05-20T10:09:40.000Z",
+                  "updatedAt": "2022-05-20T10:09:40.000Z"
+              }
             }
           },
           "404": {
@@ -87,6 +157,9 @@
                 "Error": {
                   "type": "string"
                 }
+              },
+              "example": {
+                "Error": "Doctor not found"
               }
             }
           }
@@ -99,11 +172,42 @@
         "summary": "Register",
         "consumes": "application/json",
         "parameters":[{
-          "required":["phone", "password"],
+          "required":["phone", "password", "name", "surname", "hospital", "doctor_type"],
           "in": "body",
           "description": "Register doctor",
           "schema": {
-          "$ref": "#/definitions/Doctor"
+            "properties": {
+              "name": {
+                "type": "string",
+                "maxLength": 50
+              },
+              "surname": {
+                "type": "string",
+                "maxLength": 50
+              },
+              "phone": {
+                "type": "string",
+                "maxLength": 50
+              },
+              "hospital": {
+                "type": "string"
+              },
+              "password": {
+                "type": "string"
+              },
+              "doctor_type": {
+                "type": "integer",
+                "foreignKey": "id"
+              } 
+            },
+            "example": {
+              "name": "Henry",
+              "surname": "Bren",
+              "phone": "+998991234567",
+              "hospital": "Shox Med Center",
+              "password": "mypassword123",
+              "doctor_type": 1
+            }
           }
         }],
         "responses": {
@@ -141,26 +245,59 @@
                 "message": {
                   "type": "string"
                 }
+              },
+              "example": {
+                  "data" : {
+                    "id": 5,
+                    "name": "Henry",
+                    "surname": "Bren",
+                    "phone": "+998991234567",
+                    "hospital": "Shox Med Center",
+                    "doctor_type": 1,
+                    "updatedAt": "2022-05-23T11:17:20.493Z",
+                    "createdAt": "2022-05-23T11:17:20.493Z"
+                  },
+                  "message": "Doctor: Henry Bren successfully created"
               }
             }
           },
           "400": {
             "description": "Validation error",
-            "schema": {
-              "properties": {
-                "Error": {
-                  "type": "string"
+              "schema": {
+                "properties": {
+                  "errors": {
+                  "type":"array",
+                    "items": {
+                      "properties": {
+                        "key": {
+                          "type": "string"
+                        }
+                      }
+                    }
+                  }
+                },
+                "example": {
+                  "errors": [
+                    {
+                      "name": "Invalid value"
+                    },
+                    {
+                      "phone": "Invalid value"
+                    }
+                  ]
                 }
               }
-            }
           },
           "409": {
-            "description": "Conflict",
+            "description": "Conflict, if Doctor allready exsists",
             "schema": {
               "properties": {
                 "Error": {
                   "type": "string"
                 }
+              },
+              "example": {
+                "message": "Doctor: Nodir Navruzov allready exsists"
               }
             }
           },
@@ -171,6 +308,9 @@
                 "Error": {
                   "type": "string"
                 }
+              },
+              "example": {
+                "error": "Somethink wrong"
               }
             }
           }
@@ -193,6 +333,10 @@
               "password": {
                 "type":"string"
               }
+            },
+            "example": {
+              "phone": "+998991234567",
+              "password": "mypassword123"
             }
           }
         }],
@@ -231,6 +375,17 @@
                 "token": {
                   "type": "string"
                 }
+              },
+              "example": {
+                "data": {
+                  "_id": 1,
+                  "name": "Nodir",
+                  "surname": "Navruzov",
+                  "phone": "+998991234567",
+                  "hospital": "Safo Tibbiyot",
+                  "doctor_type": "LOR"
+                },
+                "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE2NTI0Mjk5NzQsImV4cCI6MTY1MjQ3MzE3NH0.TnGw93yRJZ7egOu2Ea5kxI3sHb-ZYPKTdGxhr9XZ6z0"
               }
             }
           },
@@ -241,18 +396,41 @@
                 "Error": {
                   "type": "string"
                 }
+              },
+              "example": {
+                "message": "Phone or password wrong"
               }
             }
           },
           "400": {
             "description": "Validation error",
-            "schema": {
-              "properties": {
-                "Error": {
-                  "type": "string"
+              "schema": {
+                "properties": {
+                  "errors": {
+                  "type":"array",
+                    "items": {
+                      "properties": {
+                        "phone": {
+                          "type": "string"
+                        },
+                        "password": {
+                          "type": "string"
+                        }
+                      }
+                    }
+                  }
+                },
+                "example": {
+                  "errors": [
+                    {
+                      "phone": "Invalid value"
+                    },
+                    {
+                      "password": "Invalid value"
+                    }
+                  ]
                 }
               }
-            }
           }
         }
       }
@@ -269,7 +447,18 @@
           "200": {
             "description": "OK",
             "schema": {
-              "$ref": "#/definitions/Doctor_type"
+              "properties": {
+                "id": {
+                  "type": "integer"
+                },
+                "type": {
+                  "type": "string"
+                }
+              },
+              "example": {
+                "id": 1,
+                "type": "Stomatolog"
+              }
             }
           },
           "404": {
@@ -279,18 +468,35 @@
                 "Error": {
                   "type": "string"
                 }
+              },
+              "example": {
+                "Error": "Doctor type not found"
               }
             }
           },
           "400": {
             "description": "Validation error",
-            "schema": {
-              "properties": {
-                "Error": {
-                  "type": "string"
+              "schema": {
+                "properties": {
+                  "errors": {
+                  "type":"array",
+                    "items": {
+                      "properties": {
+                        "name": {
+                          "type": "string"
+                        }
+                      }
+                    }
+                  }
+                },
+                "example": {
+                  "errors": [
+                    {
+                      "name": "Invalid value"
+                    }
+                  ]
                 }
               }
-            }
           }
         }
       }
@@ -308,6 +514,9 @@
               "name": {
                 "type": "string"
               }
+            },
+            "example": {
+              "name": "Oncologists"
             }
           }
         }],
@@ -315,16 +524,491 @@
           "200": {
             "description": "OK",
             "schema": {
-              "$ref":"#/definitions/Doctor_type"
+              "properties": {
+                "type": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "integer"
+                    },
+                    "name": {
+                      "type":"string"
+                    },
+                    "updatedAt": {
+                      "type":"string"
+                    },
+                    "createdAt": {
+                      "type":"string"
+                    }
+                  },
+                  "message": "Type LOR successfully created"
+                }
+              }
             }
           },
           "500": {
-            "description": "Server error",
+            "description": "Server Error",
             "schema": {
               "properties": {
                 "Error": {
                   "type": "string"
                 }
+              },
+              "example": {
+                "error": "Somethink wrong"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/patient/create": {
+      "post": {
+        "tags": ["Patient"],
+        "summary": "Create new patient",
+        "parameters":[{
+          "in": "body",
+          "required":["name", "surname", "phone"],
+          "description": "Create new patient",
+          "schema": {
+            "properties": {
+              "name": {
+                "type": "string",
+                "maxLength": 255
+              },
+              "surname": {
+                "type": "string",
+                "maxLength": 255
+              },
+              "phone": {
+                "type": "string",
+                "maxLength": 13
+              },
+              "address": {
+                "type": "string",
+                "maxLength": 255
+              },
+              "birth_date": {
+                "type": "string",
+                "maxLength": 25
+              },
+              "gender": {
+                "type": "string",
+                "maxLength": 10
+              }
+            },
+            "example": {
+              "address":"Toshkent, Yakkasaroy, 12/22",
+              "name":"Michael",
+              "surname":"Jeckson",
+              "birth_date":"03.09.1990",
+              "gender":"male",
+              "phone":"+998999994561"
+            }
+          }
+        }],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "properties": {
+                "data": {
+                  "properties": {
+                    "_id": {
+                      "type": "integer",
+                      "uniqueItems": true,
+                      "autoIncrement": true
+                    },
+                    "address": {
+                      "type": "string",
+                      "maxLength": 255
+                    },
+                    "name": {
+                      "type": "string",
+                      "maxLength": 255
+                    },
+                    "surname": {
+                      "type": "string",
+                      "maxLength": 255
+                    },
+                    "birth_date": {
+                      "type": "string",
+                      "maxLength": 25
+                    },
+                    "gender": {
+                      "type": "string",
+                      "maxLength": 10
+                    },
+                    "phone": {
+                      "type": "string",
+                      "uniqueItems": true,
+                      "maxLength": 13
+                    }
+                  }
+                },
+                "message": {
+                  "type": "string"
+                }
+              },
+              "example": {
+                "data": {
+                  "id": 17,
+                  "address": "Toshkent, Yakkasaroy, 12/22",
+                  "name": "Michael",
+                  "surname": "Jecksons",
+                  "birth_date": "03.09.1990",
+                  "gender": "male",
+                  "phone": "+998999994561",
+                  "updatedAt": "2022-05-23T12:36:59.957Z",
+                  "createdAt": "2022-05-23T12:36:59.957Z"
+                },
+                "message": "Patient Michael Jecksons successfully created"
+              }
+            }
+          },
+          "500": {
+            "description": "Server Error",
+            "schema": {
+              "properties": {
+                "Error": {
+                  "type": "string"
+                }
+              },
+              "example": {
+                "error": "Somethink wrong"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/patient/by-id": {
+      "get": {
+        "tags": ["Patient"],
+        "summary": "Get patient by ID",
+        "parameters": [{
+          "required":["id"],
+          "in": "qeury",
+          "name": "id"
+        }],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "properties": {
+                "_id": {
+                  "type": "integer",
+                  "uniqueItems": true,
+                  "autoIncrement": true
+                },
+                "address": {
+                  "type": "string",
+                  "maxLength": 255
+                },
+                "name": {
+                  "type": "string",
+                  "maxLength": 255
+                },
+                "surname": {
+                  "type": "string",
+                  "maxLength": 255
+                },
+                "birth_date": {
+                  "type": "string",
+                  "maxLength": 25
+                },
+                "gender": {
+                  "type": "string",
+                  "maxLength": 10
+                },
+                "phone": {
+                  "type": "string",
+                  "uniqueItems": true,
+                  "maxLength": 13
+                },
+                "createdAt": {
+                  "type": "string"
+                },
+                "updatedAt": {
+                  "type": "string"
+                } 
+              },
+              "example": {
+                "id": 12,
+                "address": "Toshkent, Yakkasaroy, 12/22",
+                "name": "Michael",
+                "surname": "Jecksons",
+                "birth_date": "03.09.1990",
+                "gender": "male",
+                "phone": "+998999994561",
+                "createdAt": "2022-05-23T12:34:48.000Z",
+                "updatedAt": "2022-05-23T12:34:48.000Z"
+              }
+            }
+          },
+          "404": {
+            "description": "Error not found",
+            "schema": {
+              "properties": {
+                "error": {
+                  "type": "string"
+                }
+              },
+              "example": {
+                "error": "Patient not found"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/pill/create": {
+      "post": {
+        "tags": ["Pill"],
+        "summary": "Create new pill",
+        "parameters":[{
+          "in": "body",
+          "required":["name", "type"],
+          "description": "Create new pill",
+          "schema": {
+            "properties": {
+              "_id": {
+                "type": "integer",
+                "uniqueItems": true,
+                "autoIncrement": true
+              },
+              "name": {
+                "type": "string",
+                "maxLength": 255
+              },
+              "type": {
+                "type": "string",
+                "maxLength": 255
+              }
+            },
+            "example": {
+              "name":"Fenilpiracetam",
+              "type":"tab"
+            }
+          }
+        }],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "properties": {
+                "message": {
+                  "type": "string"
+                }
+              },
+              "example": {
+                "message": "Pill Fenilpiracetam Tab successfully created!"
+              }
+            }
+          },
+          "400": {
+            "description": "Validation error",
+              "schema": {
+                "properties": {
+                  "errors": {
+                  "type":"array",
+                    "items": {
+                      "properties": {
+                        "key": {
+                          "type": "string"
+                        }
+                      }
+                    }
+                  }
+                },
+                "example": {
+                  "errors": [
+                    {
+                      "name": "Invalid value"
+                    },
+                    {
+                      "type": "Invalid value"
+                    }
+                  ]
+                }
+              }
+          },
+          "500": {
+            "description": "Server Error",
+            "schema": {
+              "properties": {
+                "Error": {
+                  "type": "string"
+                }
+              },
+              "example": {
+                "error": "Somethink wrong"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/pill/by-id": {
+      "get": {
+        "tags": ["Pill"],
+        "summary": "Get pill by ID",
+        "parameters": [{
+          "required":["id"],
+          "in": "qeury",
+          "name": "id"
+        }],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "properties": {
+                "_id": {
+                  "type": "integer",
+                  "uniqueItems": true,
+                  "autoIncrement": true
+                },
+                "name": {
+                  "type": "string",
+                  "maxLength": 255
+                },
+                "type": {
+                  "type": "string",
+                  "maxLength": 255
+                },
+                "createdAt": {
+                  "type": "string"
+                },
+                "updatedAt": {
+                  "type": "string"
+                } 
+              },
+              "example": {
+                "id": 1,
+                "type": "Tab",
+                "name": "Fenilpiracetam",
+                "createdAt": "2022-05-24T05:07:57.000Z",
+                "updatedAt": "2022-05-24T05:07:57.000Z"
+              }
+            }
+          },
+          "400": {
+            "description": "Validation error",
+              "schema": {
+                "properties": {
+                  "errors": {
+                  "type":"array",
+                    "items": {
+                      "properties": {
+                        "key": {
+                          "type": "string"
+                        }
+                      }
+                    }
+                  }
+                },
+                "example": {
+                  "errors": [
+                    {
+                      "id": "Invalid value"
+                    }
+                  ]
+                }
+              }
+          },
+          "404": {
+            "description": "Error not found",
+            "schema": {
+              "properties": {
+                "error": {
+                  "type": "string"
+                }
+              },
+              "example": {
+                "error": "Pill not found"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/pill/by-name": {
+      "get": {
+        "tags": ["Pill"],
+        "summary": "Get pill by name",
+        "parameters": [{
+          "required":["name"],
+          "in": "qeury",
+          "name": "name"
+        }],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "properties": {
+                "_id": {
+                  "type": "integer",
+                  "uniqueItems": true,
+                  "autoIncrement": true
+                },
+                "name": {
+                  "type": "string",
+                  "maxLength": 255
+                },
+                "type": {
+                  "type": "string",
+                  "maxLength": 255
+                },
+                "createdAt": {
+                  "type": "string"
+                },
+                "updatedAt": {
+                  "type": "string"
+                } 
+              },
+              "example": {
+                "id": 1,
+                "type": "Tab",
+                "name": "Fenilpiracetam",
+                "createdAt": "2022-05-24T05:07:57.000Z",
+                "updatedAt": "2022-05-24T05:07:57.000Z"
+              }
+            }
+          },
+          "400": {
+            "description": "Validation error",
+              "schema": {
+                "properties": {
+                  "errors": {
+                  "type":"array",
+                    "items": {
+                      "properties": {
+                        "key": {
+                          "type": "string"
+                        }
+                      }
+                    }
+                  }
+                },
+                "example": {
+                  "errors": [
+                    {
+                      "name": "Invalid value"
+                    }
+                  ]
+                }
+              }
+          },
+          "404": {
+            "description": "Error not found",
+            "schema": {
+              "properties": {
+                "error": {
+                  "type": "string"
+                }
+              },
+              "example": {
+                "error": "Pill not found"
               }
             }
           }
@@ -379,9 +1063,58 @@
         }
       }
     },
-    "Users": {
-      "type": "array",
-      "$ref": "#/definitions/User"
+    "Patient": {
+      "required": ["name", "surname", "phone"],
+      "properties": {
+        "_id": {
+          "type": "integer",
+          "uniqueItems": true,
+          "autoIncrement": true
+        },
+        "address": {
+          "type": "string",
+          "maxLength": 255
+        },
+        "name": {
+          "type": "string",
+          "maxLength": 255
+        },
+        "surname": {
+          "type": "string",
+          "maxLength": 255
+        },
+        "birth_date": {
+          "type": "string",
+          "maxLength": 25
+        },
+        "gender": {
+          "type": "string",
+          "maxLength": 10
+        },
+        "phone": {
+          "type": "string",
+          "uniqueItems": true,
+          "maxLength": 13
+        }
+      }
+    },
+    "Pill": {
+      "required": ["name", "type"],
+      "properties": {
+        "_id": {
+          "type": "integer",
+          "uniqueItems": true,
+          "autoIncrement": true
+        },
+        "type": {
+          "type": "string",
+          "maxLength": 255
+        },
+        "name": {
+          "type": "string",
+          "maxLength": 255
+        }
+      }
     }
   },
   "schemes": ["http"],
