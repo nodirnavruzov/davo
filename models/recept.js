@@ -1,10 +1,10 @@
 const sequelize = require('../db/connection');
 const { DataTypes } = require('sequelize');
-const Doctor = require('./doctor')
-const Patient = require('./patient')
-const Pills = require('./pill')
+const doctor = require('./doctor')
+const patient = require('./patient')
+const pills = require('./pill')
 
-const receptModel = sequelize.define('Recept', {
+const receptModel = sequelize.define('recept', {
   id: {
     type: DataTypes.INTEGER,
     autoIncrement: true,
@@ -15,31 +15,32 @@ const receptModel = sequelize.define('Recept', {
   pill_id: {
     type: DataTypes.INTEGER,
     references: {
-      // ссылка на другую модель
-      model: Pills,
-      // название колонки модели-ссылки с первичным ключом
+      model: pills,
       key: 'id',
+      allowNull: false
     }
   },
   patient_id: {
     type: DataTypes.INTEGER,
     references: {
-      model: Patient,
+      model: patient,
       key: 'id',
+      allowNull: false
     } 
   }, 
   doctor_id: {
     type: DataTypes.INTEGER,
     references: {
-      model: Doctor,
+      model: doctor,
       key: 'id',
+      allowNull: false
     }
   },
-  how_many_days: {
-    type:  DataTypes.INTEGER
+  start_date: {
+    type:  DataTypes.STRING
   },
-  time: {
-    type: DataTypes.STRING(255)
+  end_date: {
+    type:  DataTypes.STRING
   },
   quantity: {
     type: DataTypes.STRING(255)
@@ -50,4 +51,4 @@ const receptModel = sequelize.define('Recept', {
 });
 
 
-module.exports = sequelize.model('Recept', receptModel) 
+module.exports = sequelize.model('recept', receptModel) 

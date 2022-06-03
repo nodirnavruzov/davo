@@ -1,13 +1,17 @@
 const sequelize = require('../db/connection');
 const { DataTypes } = require('sequelize');
 
-const patientModel = sequelize.define('Patient', {
+const patientModel = sequelize.define('patient', {
   id: {
     type: DataTypes.INTEGER,
     autoIncrement: true,
     primaryKey: true,
     allowNull: false,
     unique: true
+  },
+  subscription_id: {
+    type: DataTypes.STRING(9),
+    allowNull: false
   },
   address: {
     type: DataTypes.STRING(255),
@@ -33,5 +37,5 @@ const patientModel = sequelize.define('Patient', {
   
 });
 
-module.exports = sequelize.model('Patient', patientModel) 
+module.exports = sequelize.model('patient', patientModel) 
 

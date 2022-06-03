@@ -1,9 +1,8 @@
 const sequelize = require('../db/connection');
 const { DataTypes } = require('sequelize');
-const doctor = require('./doctor')
 const patient = require('./patient')
 
-const visitModel = sequelize.define('visit', {
+const eventSubsModel = sequelize.define('event_subs', {
   id: {
     type: DataTypes.INTEGER,
     autoIncrement: true,
@@ -11,27 +10,17 @@ const visitModel = sequelize.define('visit', {
     allowNull: false,
     unique: true
   },
+  telegram_id: {
+    type: DataTypes.INTEGER,
+  },
   patient_id: {
     type: DataTypes.INTEGER,
     references: {
       model: patient,
       key: 'id',
-    }
-  },
-  doctor_id: {
-    type: DataTypes.INTEGER,
-    references: {
-      model: doctor,
-      key: 'id',
-    },
-  },
-  visit_date: { 
-    type: DataTypes.STRING(255)
-  },
-  complaints: {
-    type: DataTypes.STRING
+      allowNull: false
+    } 
   },
 });
 
-module.exports = sequelize.model('visit', visitModel) 
-
+module.exports = sequelize.model('event_subs', eventSubsModel) 

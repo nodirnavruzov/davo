@@ -5,7 +5,7 @@ const visit = require('./visit')
 const patient = require('./patient')
 const recept = require('./recept')
 
-const visitReceptModel = sequelize.define('VisitRecept', {
+const visitReceptModel = sequelize.define('visit_recept', {
   id: {
     type: DataTypes.INTEGER,
     autoIncrement: true,
@@ -47,5 +47,5 @@ const visitReceptModel = sequelize.define('VisitRecept', {
   },
 });
 
-module.exports = sequelize.model('VisitRecept', visitReceptModel) 
+module.exports = sequelize.model('visit_recept', visitReceptModel) 
 

@@ -10,9 +10,8 @@ module.exports.create = async (req, res) => {
       }
     })
     if (!foundPill) {
-      const pill = new Pill({...req.body})
-      await pill.save()
-      res.status(200).json({message: `Pill ${name} ${type} successfully created!`})
+      await Pill.create({...req.body})
+      res.status(201).json({message: `Pill ${name} ${type} successfully created!`})
     } else {
       res.status(200).json({message: `Pill ${name} ${type} allready exsists!`})
     }

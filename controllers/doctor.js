@@ -66,28 +66,6 @@ module.exports.login = async (req, res, next) => {
         Error: error.message 
     }) 
   }
-  // try {
-  //   const { phone, password } = req.body
-  //   let foundDoc = await Doctor.findOne({where: {
-  //     phone
-  //   }})
-  //   if (foundDoc){
-  //     const compareResult = await servicePassword.comparePass({password, hash: foundDoc.password})
-  //     if (compareResult) {
-  //       delete foundDoc.dataValues.password
-  //       const token = createToken({ ...foundDoc})
-  //       res.status(200).json({data: foundDoc, token})
-  //     } else {
-  //       res.status(401).json({message: 'Phone or password wrong'})
-  //     }
-  //   } else {
-  //     res.status(401).json({message: 'Phone or password wrong'})
-  //   }    
-  // } catch (error) {
-  //   res.status(400).json({
-  //     Error: error.message
-  //   })
-  // }
 };
 
 module.exports.register = async (req, res, error) => {
@@ -103,28 +81,24 @@ module.exports.register = async (req, res, error) => {
 
     const existsDoctor = await Doctor.findOne({ 
       where: { 
-        phone,
-        name,
-        surname
+        phone
       }
     })
 
     if (!existsDoctor) {
-
-      const hassPass = await servicePassword.hashPass(password)
-      const doctor = new Doctor({
+      const hasPass = await servicePassword.hashPass(password)
+      const { dataValues } = await Doctor.create({
         name,
         surname,
         phone,
         hospital,
         doctor_type,
-        password: hassPass
+        password: hasPass
       })
-      const { dataValues } = await doctor.save()
       delete dataValues.password
-      res.status(200).json({data: dataValues, message: `Doctor: ${name} ${surname} successfully created`})
+      res.status(201).json({data: dataValues, message: `Doctor: ${name} ${surname} successfully created`})
     } else {
-      res.status(409).json({message: `Doctor: ${name} ${surname} allready exsists`})
+      res.status(409).json({message: `Doctor: with ${phone} allready exsists`})
     }
   } catch (error) {
     res.status(500).json({

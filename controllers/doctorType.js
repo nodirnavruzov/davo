@@ -5,9 +5,8 @@ module.exports.create = async (req, res) => {
     const { type } = req.body 
     const exsistsType = await DoctorType.findOne({ where: { type } });
     if (!exsistsType) {
-      const docType = new DoctorType({type})
-      const { dataValues } = await docType.save()
-      res.status(200).json({type: dataValues, message: `Type ${type} successfully created`})
+      const { dataValues } = await DoctorType.create({type})
+      res.status(201).json({type: dataValues, message: `Type ${type} successfully created`})
     } else {
       res.status(200).json({message: `Type ${type} already exsists`})
     }

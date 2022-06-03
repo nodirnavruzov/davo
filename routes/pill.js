@@ -5,7 +5,7 @@ const {
   pillCreateValidationRules,
   pillByNameValidationRules,
   pillByIdValidationRules
- } = require('../validator/pill')
+} = require('../validator/pill')
 const { validate } = require('../validator/index')
 
 

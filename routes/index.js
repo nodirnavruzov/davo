@@ -18,7 +18,7 @@ const receptRoutes = require('./recept');
 
 const visitReceptRoutes = require('./visitRecept');
 
-const users = require('./users');
+const subscribeRoutes = require('./subscribe');
 
 
 // declare routes 
@@ -44,8 +44,8 @@ router.use('/recept', receptRoutes);
 // Visit recept routes
 router.use('/visit-recept', visitReceptRoutes);
 
-// Test routes
-router.use('/users', users);
+// Visit recept routes
+router.use('/subscribe', subscribeRoutes);
 
 // Docs for Routes
 router.use('/api-docs', swaggerUi.serve);

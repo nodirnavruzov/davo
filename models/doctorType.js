@@ -1,7 +1,7 @@
 const sequelize = require('../db/connection');
 const { DataTypes } = require('sequelize');
 
-const doctorTypeModel = sequelize.define('DoctorType', {
+const doctorTypeModel = sequelize.define('doctor_type', {
   id: {
     type: DataTypes.INTEGER,
     autoIncrement: true,
@@ -27,4 +27,4 @@ const doctorTypeModel = sequelize.define('DoctorType', {
 });
 
 
-module.exports = sequelize.model('DoctorType', doctorTypeModel) 
+module.exports = sequelize.model('doctor_type', doctorTypeModel) 

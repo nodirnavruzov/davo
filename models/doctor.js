@@ -1,8 +1,8 @@
 const sequelize = require('../db/connection');
 const { DataTypes } = require('sequelize');
-const doctorType = require('../models/doctorType')
+const doctor_type = require('../models/doctorType')
 
-const doctorModel = sequelize.define('Doctor', {
+const doctorModel = sequelize.define('doctor', {
   id: {
     type: DataTypes.INTEGER,
     autoIncrement: true,
@@ -26,12 +26,12 @@ const doctorModel = sequelize.define('Doctor', {
     type: DataTypes.STRING(50),
   },
   password: {
-    type: DataTypes.STRING
+    type: DataTypes.STRING(64)
   },
   doctor_type: {
     type: DataTypes.INTEGER,
     references: {
-      model: doctorType,
+      model: doctor_type,
       key: 'id',
       allowNull: false
     },
@@ -48,6 +48,6 @@ const doctorModel = sequelize.define('Doctor', {
 }
 );
 
-module.exports = sequelize.model('Doctor', doctorModel) 
+module.exports = sequelize.model('doctor', doctorModel) 
 
 
