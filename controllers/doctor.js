@@ -102,7 +102,7 @@ module.exports.register = async (req, res, error) => {
     }
   } catch (error) {
     res.status(500).json({
-      message: 'Somethink wrong'
+      message: 'Something wrong'
     })
   }
 };

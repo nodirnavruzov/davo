@@ -7,10 +7,9 @@ const { create, allSubs, allSubsIds, eventTimesByEventId, test } = require('../c
 
 // declare subscribe methods & routes  
 // router.get('/')
-router.post('/', allSubs)
+router.get('/', allSubs)
 router.get('/ids', allSubsIds)
 router.post('/create', create)
 router.post('/event-times', eventTimesByEventId)
-router.post('/test', test)
 
 module.exports = router;

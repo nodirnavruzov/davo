@@ -37,13 +37,16 @@ const receptModel = sequelize.define('recept', {
     }
   },
   start_date: {
-    type:  DataTypes.STRING
+    type:  DataTypes.DATEONLY,
+    allowNull: false
   },
   end_date: {
-    type:  DataTypes.STRING
+    type:  DataTypes.DATEONLY,
+    allowNull: false
   },
   quantity: {
-    type: DataTypes.STRING(255)
+    type: DataTypes.STRING(255),
+    allowNull: false
   },
   description: {
     type: DataTypes.STRING(255)

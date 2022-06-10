@@ -61,6 +61,6 @@ module.exports.create = async (req, res) => {
 			await transaction.rollback()
 		}
 		console.log(error)
-		res.status(500).json({Error: 'Somethink wrong!'})
+		res.status(500).json({Error: 'Something wrong!'})
 	}
 }

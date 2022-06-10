@@ -10,29 +10,23 @@ const sequelize = require('../db/connection')
 
 module.exports.create = async (req, res) => {
   try {
-    const body = req.body
-    console.log('body', body)
-    
-    const foundPac = await Patient.findOne({
+    const {telegram_id, phone, code} = req.body
+    const updatedPatient = await Patient.update(
+      {telegram_id},
+      {
       where: {
-        subscription_id: body.code,
-        phone: body.phone
+        subscription_id: code,
+        phone,
       }
     })
-    console.log('foundPac', foundPac)
-    
-    if (foundPac) {
-      await EventSubs.create({
-        telegram_id: body.telegram_id,
-        patient_id: foundPac.id
-      })
-      res.status(200).json({name: foundPac.name, surname: foundPac.surname})
+    if (updatedPatient[0]) {
+      res.status(200).json({success: true})
     } else {
-      res.status(404).json('Not found')
+      res.status(404).json({success: false})
     }
   } catch (error) {
     res.status(500).json({
-      error: 'Somethink wrong'
+      error: 'Something wrong'
     })
   }
 }
@@ -41,7 +35,6 @@ module.exports.eventTimesByEventId = async (req, res) => {
   try {
     
     const ids = req.body
-    
     const foundEventTimes = await ReceptTime.findAll({
       where: {
         [Op.or]: ids
@@ -52,69 +45,24 @@ module.exports.eventTimesByEventId = async (req, res) => {
   } catch (error) {
     console.log('error',error)
     res.status(500).json({
-      error: 'Somethink wrong'
+      error: 'Something wrong'
     })
   }
 }
 
-module.exports.test = async (req, res) => {
-  try {
-    const body = req.body
-    console.log('body', body)
-    
-    // const myData = await sequelize.query(`select p.name, p.surname from receptevents e INNER JOIN recepteventtimes t on e.id=t.recept_event_id INNER JOIN recepts r on e.id=r.recept_event_id inner join patients p on r.patient_id=p.id where e.id=1`, { raw: true })
-    // console.log('myData', myData)
-    // Recept.findAll({
-    //   where: {
-    //     [Op.or]: body.ids,
-    //   },
-    //   raw: true
-    // })
-    res.status(200).json()
-  } catch (error) {
-    console.log('error',error)
-    res.status(500).json({
-      error: 'Somethink wrong'
-    })
-  }
-}
 
 module.exports.allSubs = async (req, res) => {
   try {
-    const foundEventSubs = await EventSubs.findAll({raw:true})
-    const { start_date, end_date} = req.body
-    const allRecept = await Recept.findAll({
-      where: {
-        start_date: { 
-          [Op.lte]: start_date,
-
-        },
-        end_date: { 
-          [Op.gte]: start_date
-        },
-      },
-      attributes: ['id'],
-    })
-    const ids = allRecept.map(ids => {
-      return ids.id
-    })
-    console.log('ids', ids)
-    
-    const recTime = await ReceptTime.findAll({
-      where: {
-        recept_id: ids 
-      },
-      raw: true
-    })
-    res.status(200).json({recepts: allRecept, event_times: recTime})
-    // if (foundEventSubs.length) {
-    //   res.status(200).json({eventSubs: foundEventSubs, allRecepts: allRecept})
-    // } else {
-    //   res.status(404).json('Not found')
-    // }
+    /*
+     SELECT patient.telegram_id, patient.name, patient.surname, rt.time, pill.name FROM patients patient INNER JOIN recepts recept ON recept.start_date='2022-06-08' INNER JOIN pills pill ON pill.id=recept.pill_id INNER JOIN recept_times rt ON rt.recept_id=recept.id
+    */
+    const recepts = await sequelize.query(`
+    SELECT patient.telegram_id, patient.name AS patient_name, patient.surname AS patient_surname, rt.time, pill.name AS pill_name, recept.description AS recept_descr, recept.quantity AS pill_quantity FROM patients patient INNER JOIN recepts recept ON recept.end_date >= DATE(NOW()) INNER JOIN pills pill ON pill.id=recept.pill_id INNER JOIN recept_times rt ON rt.recept_id=recept.id`
+    )
+    res.status(200).json(recepts[0])
   } catch (error) {
     res.status(500).json({
-      error: 'Somethink wrong'
+      error: 'Something wrong'
     })
   }
 }
@@ -135,7 +83,7 @@ module.exports.allSubsIds = async (req, res) => {
     }
   } catch (error) {
     res.status(500).json({
-      error: 'Somethink wrong'
+      error: 'Something wrong'
     })
   }
 }

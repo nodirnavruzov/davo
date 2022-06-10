@@ -11,7 +11,7 @@ module.exports.create = async (req, res) => {
       res.status(200).json({message: `Type ${type} already exsists`})
     }
   } catch (error) {
-    res.status(500).json({error: 'Somethink wrong'})
+    res.status(500).json({error: 'Something wrong'})
     console.log('Error', error)
   }
 }

@@ -310,7 +310,7 @@
                 }
               },
               "example": {
-                "error": "Somethink wrong"
+                "error": "Something wrong"
               }
             }
           }
@@ -555,7 +555,7 @@
                 }
               },
               "example": {
-                "error": "Somethink wrong"
+                "error": "Something wrong"
               }
             }
           }
@@ -572,6 +572,12 @@
           "description": "Create new patient",
           "schema": {
             "properties": {
+              "telegram_id": {
+                "type": "string"
+              },
+              "subscription_id": {
+                "type": "string"
+              },
               "name": {
                 "type": "string",
                 "maxLength": 255
@@ -659,6 +665,7 @@
                   "birth_date": "03.09.1990",
                   "gender": "male",
                   "phone": "+998999994561",
+                  "subscription_id": "ECV1WBHLQ",
                   "updatedAt": "2022-05-23T12:36:59.957Z",
                   "createdAt": "2022-05-23T12:36:59.957Z"
                 },
@@ -675,7 +682,7 @@
                 }
               },
               "example": {
-                "error": "Somethink wrong"
+                "error": "Something wrong"
               }
             }
           }
@@ -700,6 +707,12 @@
                   "type": "integer",
                   "uniqueItems": true,
                   "autoIncrement": true
+                },
+                "telegram_id": {
+                  "type": "string"
+                },
+                "subscription_id": {
+                  "type": "string"
                 },
                 "address": {
                   "type": "string",
@@ -741,6 +754,8 @@
                 "birth_date": "03.09.1990",
                 "gender": "male",
                 "phone": "+998999994561",
+                "subscription_id": "ECV1WBHLQ",
+                "telegram_id":"8418231",
                 "createdAt": "2022-05-23T12:34:48.000Z",
                 "updatedAt": "2022-05-23T12:34:48.000Z"
               }
@@ -756,6 +771,72 @@
               },
               "example": {
                 "error": "Patient not found"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/pill": {
+      "get": {
+        "tags": ["Pill"],
+        "summary": "Get all pills",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "properties": {
+                "data": {
+                "type":"array",
+                  "items": {
+                    "properties": {
+                      "_id": {
+                        "type": "integer",
+                        "uniqueItems": true,
+                        "autoIncrement": true
+                      },
+                      "name": {
+                        "type": "string",
+                        "maxLength": 255
+                      },
+                      "type": {
+                        "type": "string",
+                        "maxLength": 255
+                      }
+                    }
+                  }
+                }
+              },
+              "example": {
+                "data": [
+                  {
+                    "id": 3,
+                    "name": "Trimol 50",
+                    "type": "Tab",
+                    "createdAt": "2022-05-20T10:09:40.000Z",
+                    "updatedAt": "2022-05-20T10:09:40.000Z"
+                  },
+                  {
+                    "id": 4,
+                    "name": "Fenotropil 100",
+                    "type": "Tab",
+                    "createdAt": "2022-05-20T10:09:40.000Z",
+                    "updatedAt": "2022-05-20T10:09:40.000Z"
+                  }
+                ]
+              }
+            }
+          },
+          "404": {
+            "description": "Error not found",
+            "schema": {
+              "properties": {
+                "Error": {
+                  "type": "string"
+                }
+              },
+              "example": {
+                "Error": "No doctor found"
               }
             }
           }
@@ -842,7 +923,7 @@
                 }
               },
               "example": {
-                "error": "Somethink wrong"
+                "error": "Something wrong"
               }
             }
           }
@@ -1014,6 +1095,482 @@
           }
         }
       }
+    },
+    "/recept/create": {
+      "post": {
+        "tags": ["Recept"],
+        "summary": "Create new Recept",
+        "parameters":[{
+          "required":["phone", "password", "name", "surname", "hospital", "doctor_type"],
+          "in": "body",
+          "description": "Register doctor",
+          "schema": {
+            "properties": {
+              "pill_id": {
+                "type": "integer",
+                "maxLength": 255
+              },
+              "patient_id": {
+                "type": "integer"
+              },
+              "doctor_id": {
+                "type": "integer"
+              },
+              "time": {
+                "type":"object",
+                "start_date":"date",
+                "end_date":"date"
+              },
+              "quantity": {
+                "type": "string",
+                "maxLength": 255
+              },
+              "description": {
+                "type": "string",
+                "maxLength": 255
+              }
+            },
+            "example": {
+              "pill_id": 2,
+              "patient_id": 8,
+              "doctor_id": 13,
+              "time": {
+                "start_date": "2022-06-08",
+                "end_date": "2022-06-10",
+                "times": ["08:00", "22:00"]
+              },  
+              "quantity": "2",
+              "description": "Before sleep"
+            }
+          }
+        }],
+        "responses": {
+          "201": {
+            "description": "OK",
+            "schema": {
+              "properties": {
+                "message": {
+                  "type": "string"
+                }
+              },
+              "example": {
+                "message": "Recept created"
+              }
+            }
+          },
+          "400": {
+            "description": "Validation error",
+              "schema": {
+                "properties": {
+                  "errors": {
+                  "type":"array",
+                    "items": {
+                      "properties": {
+                        "key": {
+                          "type": "string"
+                        }
+                      }
+                    }
+                  }
+                },
+                "example": {
+                  "errors": [
+                    {
+                      "name": "Invalid value"
+                    }
+                  ]
+                }
+              }
+          },
+          "500": {
+            "description": "Server Error",
+            "schema": {
+              "properties": {
+                "error": {
+                  "type": "string"
+                }
+              },
+              "example": {
+                "error": "Something wrong!  "
+              }
+            }
+          }
+        }
+      }
+    },
+    "/visit/create": {
+      "post": {
+        "tags": ["Visit"],
+        "summary": "Create new visit",
+        "parameters":[{
+          "in": "body",
+          "required":["name", "type"],
+          "description": "Create new visit",
+          "schema": {
+            "properties": {
+              "patient_id": {
+                "type": "integer"
+              },
+              "doctor_id": {
+                "type": "integer"
+              },
+              "visit_date": {
+                "type": "date"
+              },
+              "complaints": {
+                "type": "string"
+              }
+            },
+            "example": {
+              "patient_id": 2,
+              "doctor_id":  1,
+              "visit_date": "08-06-2022",
+              "complaints": "Uyqisizlik"
+            }
+          }
+        }],
+        "responses": {
+          "201": {
+            "description": "OK",
+            "schema": {
+              "properties": {
+                "message": {
+                  "type": "string"
+                },
+                "id": {
+                  "type": "integer"
+                }
+              },
+              "example": {
+                "message": "Visit created",
+                "id": 12
+              }
+            }
+          },
+          "400": {
+            "description": "Validation error",
+              "schema": {
+                "properties": {
+                  "errors": {
+                  "type":"array",
+                    "items": {
+                      "properties": {
+                        "key": {
+                          "type": "string"
+                        }
+                      }
+                    }
+                  }
+                },
+                "example": {
+                  "errors": [
+                    {
+                      "name": "Invalid value"
+                    },
+                    {
+                      "type": "Invalid value"
+                    }
+                  ]
+                }
+              }
+          },
+          "500": {
+            "description": "Server Error",
+            "schema": {
+              "properties": {
+                "Error": {
+                  "type": "string"
+                }
+              },
+              "example": {
+                "error": "Something wrong"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/visit/by-patient": {
+      "get": {
+        "tags": ["Visit"],
+        "summary": "Get visit by patient",
+        "parameters": [{
+          "required":["id"],
+          "in": "qeury",
+          "name": "id"
+        }],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "properties": {
+                "id": {
+                  "type": "integer"
+                },
+                "patient_id": {
+                  "type": "integer"
+                },
+                "doctor_id": {
+                  "type": "integer"
+                },
+                "visit_date": {
+                  "type": "date"
+                },
+                "complaints": {
+                  "type": "string"
+                }
+              },
+              "example": {
+                "id": 2,
+                "patient_id": 2,
+                "doctor_id": 1,
+                "visit_date": "08-06-2022",
+                "complaints": "Uyqisizlik",
+                "createdAt": "2022-06-08T12:18:02.000Z",
+                "updatedAt": "2022-06-08T12:18:02.000Z"
+              }
+            }
+          },
+          "400": {
+            "description": "Validation error",
+              "schema": {
+                "properties": {
+                  "errors": {
+                  "type":"array",
+                    "items": {
+                      "properties": {
+                        "key": {
+                          "type": "string"
+                        }
+                      }
+                    }
+                  }
+                },
+                "example": {
+                  "errors": [
+                    {
+                      "name": "Invalid value"
+                    }
+                  ]
+                }
+              }
+          },
+          "404": {
+            "description": "Error not found",
+            "schema": {
+              "properties": {
+                "Error": {
+                  "type": "string"
+                }
+              },
+              "example": {
+                "Error": "No patient visits"
+              }
+            }
+          },
+          "500": {
+            "description": "Server Error",
+            "schema": {
+              "properties": {
+                "error": {
+                  "type": "string"
+                }
+              },
+              "example": {
+                "error": "Something wrong!  "
+              }
+            }
+          }
+        }
+      }
+    },
+    "/visit/doctor": {
+      "get": {
+        "tags": ["Visit"],
+        "summary": "Get visit by doctor",
+        "parameters": [{
+          "required":["id"],
+          "in": "qeury",
+          "name": "id"
+        }],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "properties": {
+                "id": {
+                  "type": "integer"
+                },
+                "patient_id": {
+                  "type": "integer"
+                },
+                "doctor_id": {
+                  "type": "integer"
+                },
+                "visit_date": {
+                  "type": "date"
+                },
+                "complaints": {
+                  "type": "string"
+                }
+              },
+              "example": {
+                "id": 2,
+                "patient_id": 2,
+                "doctor_id": 1,
+                "visit_date": "08-06-2022",
+                "complaints": "Uyqisizlik",
+                "createdAt": "2022-06-08T12:18:02.000Z",
+                "updatedAt": "2022-06-08T12:18:02.000Z"
+              }
+            }
+          },
+          "400": {
+            "description": "Validation error",
+              "schema": {
+                "properties": {
+                  "errors": {
+                  "type":"array",
+                    "items": {
+                      "properties": {
+                        "key": {
+                          "type": "string"
+                        }
+                      }
+                    }
+                  }
+                },
+                "example": {
+                  "errors": [
+                    {
+                      "name": "Invalid value"
+                    }
+                  ]
+                }
+              }
+          },
+          "404": {
+            "description": "Error not found",
+            "schema": {
+              "properties": {
+                "Error": {
+                  "type": "string"
+                }
+              },
+              "example": {
+                "Error": "No doctor visits"
+              }
+            }
+          },
+          "500": {
+            "description": "Server Error",
+            "schema": {
+              "properties": {
+                "error": {
+                  "type": "string"
+                }
+              },
+              "example": {
+                "error": "Something wrong!"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/visit/by-id": {
+      "get": {
+        "tags": ["Visit"],
+        "summary": "Get visit by id",
+        "parameters": [{
+          "required":["id"],
+          "in": "qeury",
+          "name": "id"
+        }],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "properties": {
+                "id": {
+                  "type": "integer"
+                },
+                "patient_name": {
+                  "type": "string"
+                },
+                "doctor_name": {
+                  "type": "string"
+                },
+                "visit_date": {
+                  "type": "date"
+                },
+                "complaints": {
+                  "type": "string"
+                }
+              },
+              "example": {
+                "id": 2,
+                "patient_name": "Tayson",
+                "doctor_id": "Michael",
+                "visit_date": "08-06-2022",
+                "complaints": "Uyqisizlik",
+                "createdAt": "2022-06-08T12:18:02.000Z",
+                "updatedAt": "2022-06-08T12:18:02.000Z"
+              }
+            }
+          },
+          "400": {
+            "description": "Validation error",
+              "schema": {
+                "properties": {
+                  "errors": {
+                  "type":"array",
+                    "items": {
+                      "properties": {
+                        "key": {
+                          "type": "string"
+                        }
+                      }
+                    }
+                  }
+                },
+                "example": {
+                  "errors": [
+                    {
+                      "name": "Invalid value"
+                    }
+                  ]
+                }
+              }
+          },
+          "404": {
+            "description": "Error not found",
+            "schema": {
+              "properties": {
+                "Error": {
+                  "type": "string"
+                }
+              },
+              "example": {
+                "Error": "No visit"
+              }
+            }
+          },
+          "500": {
+            "description": "Server Error",
+            "schema": {
+              "properties": {
+                "error": {
+                  "type": "string"
+                }
+              },
+              "example": {
+                "error": "Something wrong!  "
+              }
+            }
+          }
+        }
+      }
     }
   },
   "definitions": {
@@ -1113,6 +1670,62 @@
         "name": {
           "type": "string",
           "maxLength": 255
+        }
+      }
+    },
+    "Recept": {
+      "required": ["pill_id", "patient_id", "doctor_id", "start_date", "end_date", "quantity"],
+      "properties": {
+        "_id": {
+          "type": "integer",
+          "uniqueItems": true,
+          "autoIncrement": true
+        },
+        "pill_id": {
+          "type": "integer",
+          "maxLength": 255
+        },
+        "patient_id": {
+          "type": "integer"
+        },
+        "doctor_id": {
+          "type": "integer"
+        },
+        "start_date": {
+          "type": "date"
+        },
+        "end_date": {
+          "type": "date"
+        },
+        "quantity": {
+          "type": "string",
+          "maxLength": 255
+        },
+        "description": {
+          "type": "string",
+          "maxLength": 255
+        }
+      }
+    },
+    "Visit": {
+      "required": ["visit_date", "patient_id", "doctor_id"],
+      "properties": {
+        "_id": {
+          "type": "integer",
+          "uniqueItems": true,
+          "autoIncrement": true
+        },
+        "visit_date": {
+          "type": "date"
+        },
+        "patient_id": {
+          "type": "integer"
+        },
+        "doctor_id": {
+          "type": "integer"
+        },
+        "complaints": {
+          "type": "date"
         }
       }
     }

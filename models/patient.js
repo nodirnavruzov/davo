@@ -10,8 +10,12 @@ const patientModel = sequelize.define('patient', {
     unique: true
   },
   subscription_id: {
-    type: DataTypes.STRING(9),
+    type: DataTypes.STRING,
     allowNull: false
+  },
+  telegram_id: {
+    type: DataTypes.STRING,
+    allowNull: true
   },
   address: {
     type: DataTypes.STRING(255),
@@ -34,7 +38,6 @@ const patientModel = sequelize.define('patient', {
     type: DataTypes.STRING(13),
     allowNull: false
   }
-  
 });
 
 module.exports = sequelize.model('patient', patientModel) 

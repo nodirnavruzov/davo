@@ -1,4 +1,7 @@
 const Visit = require('../models/visit')
+const Patient = require('../models/patient')
+const Doctor = require('../models/doctor')
+const sequelize = require('../db/connection');
 
 module.exports.create = async (req, res) => {
   try {
@@ -6,7 +9,7 @@ module.exports.create = async (req, res) => {
     res.status(201).json({id: visitResult.id, message: 'Visit created'})
   } catch (error) {
     res.status(500).json({
-      error: 'Somethink wrong'
+      error: 'Something wrong'
     })
   }
 }
@@ -25,8 +28,10 @@ module.exports.visitsByPatient = async (req, res) => {
       res.status(404).json({ message: 'No patient visits' })
     }
   } catch (error) {
+    console.log('error', error)
+    
     res.status(500).json({
-      error: 'Somethink wrong'
+      error: 'Something wrong'
     })
   }
 }
@@ -46,7 +51,7 @@ module.exports.doctorVisits = async (req, res) => {
     }
   } catch (error) {
     res.status(500).json({
-      error: 'Somethink wrong'
+      error: 'Something wrong'
     })
   }
 }
@@ -55,11 +60,16 @@ module.exports.doctorVisits = async (req, res) => {
 module.exports.visitById = async (req, res) => {
   try {
     const { id } = req.query
-    const visit = await Visit.findOne({
-      where: {
-        id
-      }
-    })
+    const visit = sequelize.query(`
+      SELECT
+        patient.name AS patient_name,
+        doctor.name AS doctor_name
+      FROM
+        visits visit
+      INNER JOIN doctors doctor ON doctor.id=visit.doctor_id
+      INNER JOIN patients patient ON patient.id=visit.patient_id
+      WHERE visit.id=${id}
+    `)
     if (visit) {
       res.status(200).json(visit)
     } else {
@@ -67,7 +77,7 @@ module.exports.visitById = async (req, res) => {
     }
   } catch (error) {
     res.status(500).json({
-      error: 'Somethink wrong'
+      error: 'Something wrong'
     })
   }
 }

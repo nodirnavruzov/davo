@@ -6,7 +6,7 @@ module.exports.create = async (req, res) => {
   } catch (error) {
     console.log('error', error)
     res.status(500).json({
-      Error: 'Somethink wrong!'
+      Error: 'Something wrong!'
     })
   }
 }

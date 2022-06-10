@@ -16,6 +16,7 @@ const visitModel = sequelize.define('visit', {
     references: {
       model: patient,
       key: 'id',
+      allowNull: false,
     }
   },
   doctor_id: {
@@ -23,10 +24,12 @@ const visitModel = sequelize.define('visit', {
     references: {
       model: doctor,
       key: 'id',
+      allowNull: false,
     },
   },
   visit_date: { 
-    type: DataTypes.STRING(255)
+    type: DataTypes.STRING(255),
+    allowNull: false,
   },
   complaints: {
     type: DataTypes.STRING

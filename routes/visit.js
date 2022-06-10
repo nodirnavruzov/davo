@@ -11,7 +11,7 @@ const {
 
 
 
-
+// SELECT  patients.id, name, doctors.id, name FROM patients INNER JOIN doctors ON patients.id, name = doctors.id, name;
 
 // declare visit methods & routes  
 // router.get('/', patientAddress)
